@@ -69,7 +69,8 @@ for i, sc in enumerate(stories_and_criteria):
 ```
 
 ## One of the Results from de Function
-1. **User Story:**
+
+**User Story:**
 As a casino player, I want to receive notifications about the Slot Showdown promotion so that I can participate in the competition and have a chance to win exciting prizes while playing my favorite slots.
 
 **Acceptance Criteria:**
