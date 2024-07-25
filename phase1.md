@@ -33,20 +33,25 @@ Utilizing an AI tool for brainstorming types of casino notifications, such as pr
 import openai
 
 # Configure the OpenAI API key
+import openai
+
+# Configure the OpenAI API key
 openai.api_key = ""
 
 def generate_casino_notification_ideas(input_text):
-    # Generate text ideas with GPT-4
-    response_text = openai.Completion.create(
-        engine="text-davinci-003",
-        prompt=f"Generate innovative casino notification ideas about {input_text}:",
+    # Generate text ideas with GPT-3.5 Turbo
+    response_text = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "system", "content": "You are a helpful assistant."},
+            {"role": "user", "content": f"Generate innovative casino notification ideas about {input_text}."}
+        ],
         max_tokens=150,
         n=3,
-        stop=None,
         temperature=0.7,
     )
     
-    ideas_text = [choice.text.strip() for choice in response_text.choices]
+    ideas_text = [choice['message']['content'].strip() for choice in response_text['choices']]
     
     # Generate image idea with DALL-E
     response_image = openai.Image.create(
@@ -68,6 +73,7 @@ print(f"Ideas for casino notifications about {input_topic}:")
 for i, idea in enumerate(ideas):
     print(f"{i+1}. {idea}")
 print(f"Generated image URL: {image_url}")
+
 ```
 ## Result from the Function
 
