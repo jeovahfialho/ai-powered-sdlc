@@ -69,6 +69,30 @@ for i, idea in enumerate(ideas):
     print(f"{i+1}. {idea}")
 print(f"Generated image URL: {image_url}")
 ```
+## Result from the Function
+
+**Ideas for casino notifications about promotions:**
+
+1. "Get ready to spin and win with our exclusive Slot Showdown promotion! Play your favorite slots and compete for a chance to win exciting prizes every hour."
+2. "Join us for Happy Hour at the casino and enjoy special promotions on drinks and games all night long! Cheers to winning big!"
+3. "Feeling lucky? Test your skills in our Blackjack Blitz promotion and take on the dealer for a chance to win cash prizes and bonus chips."
+4. "Calling all high rollers! Our VIP Rewards promotion offers exclusive perks and benefits for our most valued players. Unlock premium rewards and enjoy the VIP treatment."
+5. "Don't miss out on our Cash Craze promotion, where every spin could lead to a cash explosion! Play now
+--   
+1. "Ready to win big? Check out our exclusive promotion today and boost your chances of hitting the jackpot!"
+2. "Don't miss out on our limited-time offer - get extra rewards on your favorite games when you play with us this week!"
+3. "Calling all high rollers! Unlock VIP bonuses and special perks with our premium promotion designed just for you."
+4. "Feeling lucky? Participate in our latest promotion for a chance to win exciting prizes and cash rewards!"
+5. "Get in on the action with our thrilling promotion - double your winnings and experience the ultimate casino excitement!"
+6. "Attention all players! Claim your bonus spins and free chips now in our latest promotion - play more, win more!"
+--
+1. "Feeling lucky? Get ready to spin and win with our exclusive Wheel of Fortune promotion! Claim your daily spin for a chance to win exciting prizes and bonuses."
+2. "Don't miss out on our Midnight Madness promotion! Play your favorite games late into the night and unlock special bonuses and rewards."
+3. "Join the High Roller Club and experience VIP treatment like never before! Enjoy personalized promotions, exclusive events, and luxurious perks reserved just for our elite players."
+4. "Get in on the action with our Power Hour promotion! Play during designated hours to earn double points, cashback rewards, and entry into exclusive prize draws."
+5. "Calling all thrill-seekers! Take part in our Mystery Jackpot promotion for a
+Generated image URL: https://oaidalleapiprodscus.blob.core.windows.net/private/org-itSfzKUPzGF6c5dtFfeuO0ho/user-R4bOGo5N5F8fgisLmtq8cjJt/img-QoricCPoAiUyrleeYNZd9jll.png?st=2024-07-25T11%3A55%3A49Z&se=2024-07-25T13%3A55%3A49Z&sp=r&sv=2023-11-03&sr=b&rscd=inline&rsct=image/png&skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2024-07-24T23%3A22%3A52Z&ske=2024-07-25T23%3A22%3A52Z&sks=b&skv=2023-11-03&sig=sXHsSZIw3hWulSoe01VQK5Uetyme8yeADaiU5EsbqH8%3D
+
 
 ## Alternative AI Options for Concept Ideation Phase
 
