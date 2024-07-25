@@ -30,8 +30,6 @@ Utilizing an AI tool for brainstorming types of casino notifications, such as pr
 #### Multi-Modal Tool
 
 ```python
-import openai
-
 # Configure the OpenAI API key
 import openai
 
