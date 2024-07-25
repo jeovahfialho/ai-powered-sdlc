@@ -110,3 +110,6 @@ print("Generated Uizard-Friendly Notification Description:")
 print(uizard_description)
 
 ```
+
+- **Step 4**: Copy the friendly message and paste it into https://app.uizard.io to obtain the result of a friendly interface design.
+
