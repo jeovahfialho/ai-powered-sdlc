@@ -34,11 +34,11 @@ AI helps create wireframes, which are basic interface sketches. Design tools pow
   - Email alerts
 
 - **Step 2**: Use GPT-3.5 to Generate Detailed Wireframe Descriptions:
-  ```python
+```python
 import openai
 
 # Configure the OpenAI API key
-openai.api_key = "sk-None-sWKn5Pvni2fEf35VCZl8T3BlbkFJD0Kuatmy5PanA8Qe76qb"
+openai.api_key = ""
 
 # Example user stories
 user_stories = [
@@ -73,5 +73,40 @@ with open('notification_descriptions.txt', 'w') as f:
 print("Generated Notification Descriptions:")
 for description in notification_descriptions:
     print(description)
-  ```
-- **Step 3**: Use GPT-3.5 to Generate Detailed Wireframe Descriptions:
+```
+
+- **Step 3**: Generate Uizard-Friendly Description from User Story:
+
+```python
+import openai
+
+# Configure the OpenAI API key
+openai.api_key = ""
+
+user_story = "As a casino player, I want to receive notifications about the Slot Showdown promotion so that I can participate in the competition and have a chance to win exciting prizes while playing my favorite slots."
+
+def generate_uizard_friendly_description(user_story):
+    prompt = f"Generate brief and detailed notification examples and models for the following user story, limited to 300 characters: {user_story}"
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "system", "content": "You are a helpful assistant."},
+            {"role": "user", "content": prompt}
+        ],
+        max_tokens=100,
+        n=1,
+        temperature=0.7,
+    )
+    description = response.choices[0].message['content'].strip()
+    return description[:300]
+
+uizard_description = generate_uizard_friendly_description(user_story)
+
+# Save the description to a file
+with open('uizard_notification_description.txt', 'w') as f:
+    f.write(uizard_description)
+
+print("Generated Uizard-Friendly Notification Description:")
+print(uizard_description)
+
+```
