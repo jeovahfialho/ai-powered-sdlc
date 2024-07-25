@@ -22,23 +22,78 @@ Let's create a script in Python that uses GPT-4 to generate user stories and acc
 #### Example Script:
 
 ```python
+import requests
+from requests.auth import HTTPBasicAuth
+import json
 import openai
 
 # Configure the OpenAI API key
-openai.api_key = "YOUR_API_KEY_HERE"
+openai.api_key = ""
+
+# JIRA configuration
+JIRA_DOMAIN = "jeovahfialho.atlassian.net"
+JIRA_EMAIL = "jeovahfialho@gmail.com"
+JIRA_API_TOKEN = ""
+JIRA_PROJECT_KEY = "KAN"
+ISSUE_TYPE_ID = "10001"  # Substitua pelo ID correto do tipo de issue "Story"
+
+# Headers for JIRA API
+headers = {
+    "Accept": "application/json",
+    "Content-Type": "application/json"
+}
+
+def create_jira_issue(summary, description):
+    url = f"https://{JIRA_DOMAIN}/rest/api/3/issue"
+    auth = HTTPBasicAuth(JIRA_EMAIL, JIRA_API_TOKEN)
+    payload = json.dumps({
+        "fields": {
+            "project": {
+                "key": JIRA_PROJECT_KEY
+            },
+            "summary": summary,
+            "description": {
+                "type": "doc",
+                "version": 1,
+                "content": [
+                    {
+                        "type": "paragraph",
+                        "content": [
+                            {
+                                "type": "text",
+                                "text": description
+                            }
+                        ]
+                    }
+                ]
+            },
+            "issuetype": {
+                "id": ISSUE_TYPE_ID
+            }
+        }
+    })
+
+    response = requests.post(url, data=payload, headers=headers, auth=auth)
+    if response.status_code == 201:
+        print(f"Issue created successfully: {response.json()['key']}")
+    else:
+        print(f"Failed to create issue: {response.text}")
 
 def generate_user_stories_and_criteria(notification_ideas):
     stories_and_criteria = []
     
     for idea in notification_ideas:
-        response = openai.Completion.create(
-            engine="gpt-3.5-turbo",
-            prompt=f"Generate a user story and acceptance criteria for the following casino notification idea: {idea}",
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "user", "content": f"Generate a user story and acceptance criteria for the following casino notification idea: {idea}"}
+            ],
             max_tokens=150,
             n=1,
             temperature=0.7,
         )
-        stories_and_criteria.append(response.choices[0].text.strip())
+        stories_and_criteria.append(response.choices[0]['message']['content'].strip())
     
     return stories_and_criteria
 
@@ -46,22 +101,15 @@ def generate_user_stories_and_criteria(notification_ideas):
 notification_ideas = [
     "Get ready to spin and win with our exclusive Slot Showdown promotion! Play your favorite slots and compete for a chance to win exciting prizes every hour.",
     "Join us for Happy Hour at the casino and enjoy special promotions on drinks and games all night long! Cheers to winning big!",
-    "Feeling lucky? Test your skills in our Blackjack Blitz promotion and take on the dealer for a chance to win cash prizes and bonus chips.",
-    "Calling all high rollers! Our VIP Rewards promotion offers exclusive perks and benefits for our most valued players. Unlock premium rewards and enjoy the VIP treatment.",
-    "Don't miss out on our Cash Craze promotion, where every spin could lead to a cash explosion! Play now",
-    "Ready to win big? Check out our exclusive promotion today and boost your chances of hitting the jackpot!",
-    "Don't miss out on our limited-time offer - get extra rewards on your favorite games when you play with us this week!",
-    "Calling all high rollers! Unlock VIP bonuses and special perks with our premium promotion designed just for you.",
-    "Feeling lucky? Participate in our latest promotion for a chance to win exciting prizes and cash rewards!",
-    "Get in on the action with our thrilling promotion - double your winnings and experience the ultimate casino excitement!",
-    "Attention all players! Claim your bonus spins and free chips now in our latest promotion - play more, win more!",
-    "Feeling lucky? Get ready to spin and win with our exclusive Wheel of Fortune promotion! Claim your daily spin for a chance to win exciting prizes and bonuses.",
-    "Don't miss out on our Midnight Madness promotion! Play your favorite games late into the night and unlock special bonuses and rewards.",
-    "Join the High Roller Club and experience VIP treatment like never before! Enjoy personalized promotions, exclusive events, and luxurious perks reserved just for our elite players.",
-    "Get in on the action with our Power Hour promotion! Play during designated hours to earn double points, cashback rewards, and entry into exclusive prize draws."
+    "Feeling lucky? Test your skills in our Blackjack Blitz promotion and take on the dealer for a chance to win cash prizes and bonus chips."
 ]
 
 stories_and_criteria = generate_user_stories_and_criteria(notification_ideas)
+
+for i, sc in enumerate(stories_and_criteria):
+    summary = f"User Story {i+1}: Slot Showdown Promotion"
+    description = sc
+    create_jira_issue(summary, description)
 
 print("Generated User Stories and Acceptance Criteria:")
 for i, sc in enumerate(stories_and_criteria):
