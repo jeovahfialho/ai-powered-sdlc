@@ -49,6 +49,24 @@ AI can aid in generating code snippets, boilerplate code, and templates for vari
 import os
 import subprocess
 
+# Define the user story and acceptance criteria
+user_story = """
+**User Story**:
+As a casino player, I want to receive notifications about the Slot Showdown promotion so that I can participate in the competition and have a chance to win exciting prizes while playing my favorite slots.
+
+**Acceptance Criteria**:
+1. The notification about the Slot Showdown promotion should be sent to registered casino players every hour during the duration of the competition.
+2. The notification should include details about the promotion, such as the name "Slot Showdown," the opportunity to win exciting prizes, and the requirement to play favorite slots to participate.
+3. The notification should provide a clear call-to-action, encouraging players to join the competition and start playing their favorite slots.
+4. Players should be able to opt-out of receiving notifications about the Slot Showdown promotion.
+"""
+
+# Extract details from user_story for generating code
+promotion_name = "Slot Showdown"
+promotion_details = "the opportunity to win exciting prizes while playing your favorite slots"
+call_to_action = "Join the competition and start playing your favorite slots now!"
+opt_out_message = "If you do not wish to receive these notifications, you can opt-out."
+
 # Define project structure
 project_name = "ai-sdlc-phase5"
 backend_name = "backend-ai-sdlc-phase5"
@@ -69,7 +87,7 @@ for dir in dirs:
     os.makedirs(dir, exist_ok=True)
 
 # Backend Code
-backend_code = """
+backend_code = f"""
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -85,19 +103,31 @@ class Notification(db.Model):
     title = db.Column(db.String(255), nullable=False)
     message = db.Column(db.Text, nullable=False)
     sent_at = db.Column(db.DateTime, default=db.func.current_timestamp())
+    opt_out = db.Column(db.Boolean, default=False)
 
 @app.route('/notify', methods=['POST'])
 def notify():
     user_id = request.json['user_id']
-    title = request.json['title']
-    message = request.json['message']
+    title = "{promotion_name} Promotion"
+    message = request.json['message'] + "\\n\\n{promotion_details}\\n{call_to_action}\\n{opt_out_message}"
     notification = Notification(user_id=user_id, title=title, message=message)
     db.session.add(notification)
     db.session.commit()
-    return jsonify({'message': 'Notification sent'}), 201
+    return jsonify({{'message': 'Notification sent'}}), 201
+
+@app.route('/opt-out', methods=['POST'])
+def opt_out():
+    user_id = request.json['user_id']
+    notifications = Notification.query.filter_by(user_id=user_id).all()
+    for notification in notifications:
+        notification.opt_out = True
+    db.session.commit()
+    return jsonify({{'message': 'You have successfully opted out of notifications.'}}), 200
 
 def send_notification():
-    print("Sending Slot Showdown notification to registered players")
+    notifications = Notification.query.filter_by(opt_out=False).all()
+    for notification in notifications:
+        print(f"Sending {{notification.title}} to user {{notification.user_id}}")
 
 scheduler = BackgroundScheduler()
 scheduler.add_job(send_notification, 'interval', hours=1)
@@ -188,24 +218,27 @@ with open(f"{project_name}/{frontend_name}/src/index.js", "w") as f:
 with open(f"{project_name}/{frontend_name}/public/index.html", "w") as f:
     f.write(index_html)
 
-with open(f"{project_name}/{frontend_name}/package.json", "w") as f:
+with open(f"{project_name}/{frontend_name}/package.json", "w") as f):
     f.write(package_json)
 
 print("Project structure and code created.")
 
-# Initialize a new Git repository and push the code for backend
-subprocess.run(["git", "init"], cwd=f"{project_name}/{backend_name}")
-subprocess.run(["git", "add", "."], cwd=f"{project_name}/{backend_name}")
-subprocess.run(["git", "commit", "-m", "Initial commit for backend"], cwd=f"{project_name}/{backend_name}")
-subprocess.run(["git", "remote", "add", "origin", "https://github.com/jeovahfialho/backend-ai-sdlc-phase5.git"], cwd=f"{project_name}/{backend_name}")
-subprocess.run(["git", "push", "-u", "origin", "main"], cwd=f"{project_name}/{backend_name}")
+# Function to initialize, pull, add, commit, and push the repository
+def git_operations(repo_path, repo_url):
+    if not os.path.exists(os.path.join(repo_path, ".git")):
+        subprocess.run(["git", "init"], cwd=repo_path)
+        subprocess.run(["git", "remote", "add", "origin", repo_url], cwd=repo_path)
+    
+    subprocess.run(["git", "pull", "origin", "main"], cwd=repo_path)
+    subprocess.run(["git", "add", "."], cwd=repo_path)
+    subprocess.run(["git", "commit", "-m", "Update project files"], cwd=repo_path)
+    subprocess.run(["git", "push", "-u", "origin", "main"], cwd=repo_path)
 
-# Initialize a new Git repository and push the code for frontend
-subprocess.run(["git", "init"], cwd=f"{project_name}/{frontend_name}")
-subprocess.run(["git", "add", "."], cwd=f"{project_name}/{frontend_name}")
-subprocess.run(["git", "commit", "-m", "Initial commit for frontend"], cwd=f"{project_name}/{frontend_name}")
-subprocess.run(["git", "remote", "add", "origin", "https://github.com/jeovahfialho/frontend-ai-sdlc-phase5.git"], cwd=f"{project_name}/{frontend_name}")
-subprocess.run(["git", "push", "-u", "origin", "main"], cwd=f"{project_name}/{frontend_name}")
+# Initialize and push the backend repository
+git_operations(f"{project_name}/{backend_name}", "https://github.com/jeovahfialho/backend-ai-sdlc-phase5.git")
+
+# Initialize and push the frontend repository
+git_operations(f"{project_name}/{frontend_name}", "https://github.com/jeovahfialho/frontend-ai-sdlc-phase5.git")
 
 print("Project pushed to GitHub.")
 ```
