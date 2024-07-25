@@ -37,40 +37,41 @@ AI helps create wireframes, which are basic interface sketches. Design tools pow
   ```python
   import openai
 
-  # Configure the OpenAI API key
-  openai.api_key = "YOUR_OPENAI_API_KEY"
+# Configure the OpenAI API key
+openai.api_key = ""
 
-  # Example user stories
-  user_stories = [
-      "As a casino player, I want to receive notifications about the Slot Showdown promotion so that I can participate in the competition and have a chance to win exciting prizes while playing my favorite slots.",
-      "As a casino patron, I want to receive notifications about Happy Hour promotions at the casino so that I can take advantage of special offers on drinks and games and increase my chances of winning big.",
-      "As a casino customer, I want to receive notifications about special promotions like Blackjack Blitz so that I can participate and potentially win cash prizes and bonus chips by playing against the dealer."
-  ]
+# Example user stories
+user_stories = [
+    "As a casino player, I want to receive notifications about the Slot Showdown promotion so that I can participate in the competition and have a chance to win exciting prizes while playing my favorite slots.",
+    "As a casino patron, I want to receive notifications about Happy Hour promotions at the casino so that I can take advantage of special offers on drinks and games and increase my chances of winning big.",
+    "As a casino customer, I want to receive notifications about special promotions like Blackjack Blitz so that I can participate and potentially win cash prizes and bonus chips by playing against the dealer."
+]
 
-  def generate_notification_descriptions(user_stories):
-      descriptions = []
-      for story in user_stories:
-          response = openai.ChatCompletion.create(
-              model="gpt-3.5-turbo",
-              messages=[
-                  {"role": "system", "content": "You are a helpful assistant."},
-                  {"role": "user", "content": f"Generate a detailed notification description for the following user story: {story}"}
-              ],
-              max_tokens=150,
-              n=1,
-              temperature=0.7,
-          )
-          descriptions.append(response.choices[0].message['content'].strip())
-      return descriptions
+def generate_notification_descriptions(user_stories):
+    descriptions = []
+    for story in user_stories:
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "user", "content": f"Generate a detailed notification description for the following user story: {story}"}
+            ],
+            max_tokens=150,
+            n=1,
+            temperature=0.7,
+        )
+        descriptions.append(response.choices[0].message['content'].strip())
+    return descriptions
 
-  notification_descriptions = generate_notification_descriptions(user_stories)
+notification_descriptions = generate_notification_descriptions(user_stories)
 
-  # Save descriptions to a file
-  with open('notification_descriptions.txt', 'w') as f:
-      for description in notification_descriptions:
-          f.write(description + "\n\n")
+# Save descriptions to a file
+with open('notification_descriptions.txt', 'w') as f:
+    for description in notification_descriptions:
+        f.write(description + "\n\n")
 
-  print("Generated Notification Descriptions:")
-  for description in notification_descriptions:
-      print(description)
-```
+print("Generated Notification Descriptions:")
+for description in notification_descriptions:
+    print(description)
+  ```
+- **Step 3**: Use GPT-3.5 to Generate Detailed Wireframe Descriptions:
