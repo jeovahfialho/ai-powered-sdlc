@@ -35,10 +35,10 @@ AI helps create wireframes, which are basic interface sketches. Design tools pow
 
 - **Step 2**: Use GPT-3.5 to Generate Detailed Wireframe Descriptions:
   ```python
-  import openai
+import openai
 
 # Configure the OpenAI API key
-openai.api_key = ""
+openai.api_key = "sk-None-sWKn5Pvni2fEf35VCZl8T3BlbkFJD0Kuatmy5PanA8Qe76qb"
 
 # Example user stories
 user_stories = [
