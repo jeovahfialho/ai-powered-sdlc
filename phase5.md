@@ -1,4 +1,3 @@
-
 # Phase 5: Development
 
 **Objective**:
@@ -45,40 +44,75 @@ AI can aid in generating code snippets, boilerplate code, and templates for vari
 3. The notification should provide a clear call-to-action, encouraging players to join the competition and start playing their favorite slots.
 4. Players should be able to opt-out of receiving notifications about the Slot Showdown promotion.
 
-### Backend Service Code Example
+### Backend and Front Service Code Example
 ```python
-import time
+import os
+import subprocess
+
+# Define project structure
+project_name = "ai-sdlc-phase5"
+backend_name = "backend-ai-sdlc-phase5"
+frontend_name = "frontend-ai-sdlc-phase5"
+
+dirs = [
+    project_name,
+    f"{project_name}/{backend_name}",
+    f"{project_name}/{frontend_name}",
+    f"{project_name}/{backend_name}/templates",
+    f"{project_name}/{backend_name}/static",
+    f"{project_name}/{frontend_name}/src",
+    f"{project_name}/{frontend_name}/public"
+]
+
+# Create directories
+for dir in dirs:
+    os.makedirs(dir, exist_ok=True)
+
+# Backend Code
+backend_code = """
+from flask import Flask, request, jsonify
+from flask_sqlalchemy import SQLAlchemy
 from apscheduler.schedulers.background import BackgroundScheduler
+import time
+
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///notifications.db'
+db = SQLAlchemy(app)
+
+class Notification(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, nullable=False)
+    title = db.Column(db.String(255), nullable=False)
+    message = db.Column(db.Text, nullable=False)
+    sent_at = db.Column(db.DateTime, default=db.func.current_timestamp())
+
+@app.route('/notify', methods=['POST'])
+def notify():
+    user_id = request.json['user_id']
+    title = request.json['title']
+    message = request.json['message']
+    notification = Notification(user_id=user_id, title=title, message=message)
+    db.session.add(notification)
+    db.session.commit()
+    return jsonify({'message': 'Notification sent'}), 201
 
 def send_notification():
-    # Logic to send notification
     print("Sending Slot Showdown notification to registered players")
 
 scheduler = BackgroundScheduler()
 scheduler.add_job(send_notification, 'interval', hours=1)
 scheduler.start()
 
-try:
-    while True:
-        time.sleep(2)
-except (KeyboardInterrupt, SystemExit):
-    scheduler.shutdown()
-```
+if __name__ == '__main__':
+    db.create_all()
+    app.run(host='0.0.0.0', port=5000)
+"""
 
-### Database Schema Example
-```sql
-CREATE TABLE notifications (
-    id SERIAL PRIMARY KEY,
-    user_id INT NOT NULL,
-    title VARCHAR(255) NOT NULL,
-    message TEXT NOT NULL,
-    sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id)
-);
-```
+with open(f"{project_name}/{backend_name}/app.py", "w") as f:
+    f.write(backend_code)
 
-### Frontend Integration Code Example
-```javascript
+# Frontend Code
+frontend_code = """
 import React from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -95,15 +129,96 @@ const App = () => (
 );
 
 export default App;
+"""
+
+index_js = """
+import React from 'react';
+import ReactDOM from 'react-dom';
+import App from './App';
+import './index.css';
+
+ReactDOM.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+  document.getElementById('root')
+);
+"""
+
+package_json = """
+{
+  "name": "frontend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "dependencies": {
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-scripts": "4.0.3",
+    "react-toastify": "^8.0.3"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  }
+}
+"""
+
+index_html = """
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI SDLC Phase 5 Frontend</title>
+</head>
+<body>
+  <div id="root"></div>
+</body>
+</html>
+"""
+
+with open(f"{project_name}/{frontend_name}/src/App.js", "w") as f:
+    f.write(frontend_code)
+
+with open(f"{project_name}/{frontend_name}/src/index.js", "w") as f:
+    f.write(index_js)
+
+with open(f"{project_name}/{frontend_name}/public/index.html", "w") as f:
+    f.write(index_html)
+
+with open(f"{project_name}/{frontend_name}/package.json", "w") as f:
+    f.write(package_json)
+
+print("Project structure and code created.")
+
+# Initialize a new Git repository and push the code for backend
+subprocess.run(["git", "init"], cwd=f"{project_name}/{backend_name}")
+subprocess.run(["git", "add", "."], cwd=f"{project_name}/{backend_name}")
+subprocess.run(["git", "commit", "-m", "Initial commit for backend"], cwd=f"{project_name}/{backend_name}")
+subprocess.run(["git", "remote", "add", "origin", "https://github.com/jeovahfialho/backend-ai-sdlc-phase5.git"], cwd=f"{project_name}/{backend_name}")
+subprocess.run(["git", "push", "-u", "origin", "main"], cwd=f"{project_name}/{backend_name}")
+
+# Initialize a new Git repository and push the code for frontend
+subprocess.run(["git", "init"], cwd=f"{project_name}/{frontend_name}")
+subprocess.run(["git", "add", "."], cwd=f"{project_name}/{frontend_name}")
+subprocess.run(["git", "commit", "-m", "Initial commit for frontend"], cwd=f"{project_name}/{frontend_name}")
+subprocess.run(["git", "remote", "add", "origin", "https://github.com/jeovahfialho/frontend-ai-sdlc-phase5.git"], cwd=f"{project_name}/{frontend_name}")
+subprocess.run(["git", "push", "-u", "origin", "main"], cwd=f"{project_name}/{frontend_name}")
+
+print("Project pushed to GitHub.")
 ```
 
-## Final Considerations
-
-**Business Value**:
-- **Accelerated Development**: Using AI to generate code can significantly speed up the development process.
-- **Consistency**: AI-generated code helps maintain consistency and follow best practices across different components.
-- **Reduced Errors**: Automated code generation reduces the risk of human errors, leading to more reliable and maintainable code.
-
----
-
-Use the user story and acceptance criteria to generate backend, database, and frontend code snippets. Modify and enhance the generated code as needed to fit your project's requirements.
+### Database Schema Example
+```sql
+CREATE TABLE notifications (
+    id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    message TEXT NOT NULL,
+    sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+```
+project's requirements.
